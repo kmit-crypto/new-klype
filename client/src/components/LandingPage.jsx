@@ -921,11 +921,11 @@ export default function LandingPage() {
               // Dynamic sizing based on feature index and content
               const getColSize = () => {
                 // First feature is large
-                if (idx === 0) return { lg: 6, md: 12 };
+                if (idx === 0) return { lg: 5, md: 12 };
                 // Second and third features are medium
                 if (idx === 1 || idx === 2) return { lg: 3, md: 6 };
                 // Fourth feature is medium-large
-                if (idx === 3) return { lg: 5, md: 8 };
+                if (idx === 3) return { lg: 4, md: 8 };
                 // Fifth feature is small
                 if (idx === 4) return { lg: 3, md: 4 };
                 // Last feature is medium
@@ -942,10 +942,10 @@ export default function LandingPage() {
                 <Col lg={lg} md={md} key={idx}>
                   <motion.div
                     whileHover={{
-                      y: -10,
-                      scale: 1.02,
-                      boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)`,
-                      rotateY: 3,
+                      y: -15,
+                      scale: 1.03,
+                      boxShadow: `0 25px 50px rgba(0, 0, 0, 0.35), 0 0 20px rgba(128, 0, 255, 0.15)`,
+                      rotateY: 5,
                     }}
                     initial={{ opacity: 0, y: 30, scale: 0.95 }}
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
