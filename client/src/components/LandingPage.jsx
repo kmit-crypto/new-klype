@@ -949,15 +949,15 @@ export default function LandingPage() {
                     }}
                     initial={{ opacity: 0, y: 30, scale: 0.95 }}
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ 
-                    duration: 0.6, 
-                    delay: idx * 0.15,
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 15
-                  }}
-                  viewport={{ once: true }}
-                  className="h-100"
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: idx * 0.15,
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 15
+                    }}
+                    viewport={{ once: true }}
+                    className="h-100"
                 >
                   <div className="feature-card">
                     {/* Glow effect */}
@@ -1099,7 +1099,8 @@ export default function LandingPage() {
                   </div>
                 </motion.div>
               </Col>
-            ))}
+            );
+            })}
           </Row>
 
           {/* Multi-profile management */}
