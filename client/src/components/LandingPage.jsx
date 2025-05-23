@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Nav,
@@ -16,12 +16,34 @@ import userImage4 from "./images/image4.png";
 import userImage5 from "./images/image5.png";
 import userImage6 from "./images/image6.png";
 import { Link as ScrollLink } from "react-scroll";
+import { 
+  FaArrowRight, 
+  FaCheck, 
+  FaLock, 
+  FaRocket, 
+  FaStar, 
+  FaRegStar, 
+  FaQuoteLeft,
+  FaQuoteRight
+} from "react-icons/fa";
 
+// Import Swiper components
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
+// Import custom styles
+import "./EnhancedUI.css";
 import "./HeroSection.css";
 import { FaLinkedin } from "react-icons/fa";
 import { SiTelegram } from "react-icons/si";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import KlypeFormModal from "./KlypeFormModal";
 
 export default function LandingPage() {
@@ -38,7 +60,7 @@ export default function LandingPage() {
       img: userImage2,
     },
     {
-      name: "Jane Smith",
+      name: "Michael Johnson",
       role: "Content Strategist - TechCo",
       img: userImage3,
     },
@@ -49,34 +71,112 @@ export default function LandingPage() {
     },
     { name: "Amelia Davis", role: "Founder - StartupBoost", img: userImage6 },
     {
-      name: "Jane Smith",
+      name: "Sarah Wilson",
       role: "Content Strategist - TechCo",
       img: userImage5,
     },
   ];
+  
+  // Testimonials data
+  const testimonials = [
+    {
+      id: 1,
+      name: "Alex Morgan",
+      role: "Marketing Director at TechVision",
+      avatar: userImage,
+      quote: "Klype AI has completely transformed our LinkedIn strategy. The content it generates is not only engaging but sounds exactly like our brand voice. We've seen a 300% increase in engagement since we started using it.",
+      rating: 5
+    },
+    {
+      id: 2,
+      name: "Sophia Chen",
+      role: "Startup Founder & CEO",
+      avatar: userImage1,
+      quote: "As a busy founder, I never had time to maintain a consistent LinkedIn presence. Klype changed everything - now I post high-quality content regularly without spending hours writing. My network has grown exponentially!",
+      rating: 5
+    },
+    {
+      id: 3,
+      name: "James Wilson",
+      role: "Sales Executive at Enterprise Solutions",
+      avatar: userImage2,
+      quote: "The leads I've generated through Klype-powered content have been incredible. The AI understands my industry and creates content that resonates with my target audience. It's like having a content team in my pocket.",
+      rating: 4
+    },
+    {
+      id: 4,
+      name: "Emily Rodriguez",
+      role: "Personal Brand Coach",
+      avatar: userImage3,
+      quote: "I recommend Klype to all my clients. The personalization is unmatched - it captures your unique voice and expertise while optimizing for engagement. It's the perfect tool for anyone serious about LinkedIn.",
+      rating: 5
+    },
+    {
+      id: 5,
+      name: "David Kim",
+      role: "Tech Entrepreneur",
+      avatar: userImage4,
+      quote: "The voice note feature is a game-changer. I can record my thoughts while driving and Klype transforms them into perfectly structured posts. My engagement has increased by 250% in just two months.",
+      rating: 5
+    },
+    {
+      id: 6,
+      name: "Priya Sharma",
+      role: "Digital Marketing Consultant",
+      avatar: userImage5,
+      quote: "What impresses me most about Klype is how it stays on top of LinkedIn algorithm changes. My content consistently performs well because the AI adapts its strategy based on what's working right now.",
+      rating: 4
+    }
+  ];
   const companies = ["Google", "Amazon", "Govt. of India","Accenture","Microsoft"];
   const features = [
     {
-      title: "Personalized Content Calendar",
-      subtitle: "Plan, organize, and add content anytime.",
-      image: "🗓️",
+      title: "AI-Powered Content Calendar",
+      subtitle: "Smart scheduling for maximum engagement",
+      description: "Our intelligent calendar analyzes your audience's activity patterns and optimizes posting times to ensure your content reaches the maximum number of people when they're most likely to engage.",
+      icon: <FaRocket style={{ color: "#fff" }} />,
+      color: "linear-gradient(135deg, #c800ff, #ff00ff)",
+      benefits: ["Increased visibility", "Consistent posting schedule", "Optimal engagement times"],
     },
     {
-      title: "7-Day Personalized Content & Suggestions",
-      subtitle: "Get a tailored content plan with AI-driven recommendations",
-      suggestions: ["Suggestion", "Suggestion", "Suggestion"],
+      title: "Personalized Content Suggestions",
+      subtitle: "Custom recommendations tailored to your audience",
+      description: "Leverage our AI to generate content ideas that resonate with your specific audience. Get data-driven suggestions based on trending topics in your industry and what's performing well for similar profiles.",
+      icon: <FaLock style={{ color: "#fff" }} />,
+      color: "linear-gradient(135deg, #00a2ff, #00f2ff)",
+      suggestions: ["Industry-specific topics", "Trending conversations", "Engagement hooks", "Competitor insights"],
     },
     {
-      title: "Convert Voice Notes into Posts within 5 Seconds",
-      image: "🔊",
+      title: "Voice-to-Post Conversion",
+      subtitle: "Speak your ideas, we'll craft the perfect post",
+      description: "Record your thoughts on the go and our advanced AI will transform them into polished, professional content that maintains your authentic voice and style while optimizing for engagement.",
+      icon: <FaRocket style={{ color: "#fff" }} />,
+      color: "linear-gradient(135deg, #c800ff, #00f2ff)",
+      benefits: ["Save time on writing", "Maintain authentic voice", "Create content anywhere"],
     },
     {
-      title: "Create your own Content Workflow within minutes",
-      image: "🧩",
+      title: "Custom Workflow Automation",
+      subtitle: "Streamline your content production process",
+      description: "Build a personalized content workflow that fits your specific needs. Automate repetitive tasks, set approval processes, and ensure consistent quality across all your LinkedIn content.",
+      icon: <FaLock style={{ color: "#fff" }} />,
+      color: "linear-gradient(135deg, #ff00ff, #ff9500)",
+      benefits: ["Reduce manual work", "Consistent quality", "Scalable content production"],
     },
     {
-      title: "Convert YouTube Videos into Posts within 5 Seconds",
-      image: "🎥 ➡️ 📄",
+      title: "Multi-Format Content Creation",
+      subtitle: "Transform any content into LinkedIn-optimized posts",
+      description: "Convert YouTube videos, articles, podcasts, and more into engaging LinkedIn posts. Our AI extracts key insights and reformats them for maximum impact on the platform.",
+      icon: <FaRocket style={{ color: "#fff" }} />,
+      color: "linear-gradient(135deg, #00f2ff, #00ff95)",
+      benefits: ["Repurpose existing content", "Diversify your content mix", "Reach wider audience"],
+    },
+    {
+      title: "Advanced Analytics Dashboard",
+      subtitle: "Track performance and optimize your strategy",
+      description: "Get comprehensive insights into how your content performs. Monitor engagement metrics, audience growth, and conversion rates to continuously refine your LinkedIn strategy.",
+      icon: <FaLock style={{ color: "#fff" }} />,
+      color: "linear-gradient(135deg, #ff9500, #ff00ff)",
+      benefits: ["Data-driven decisions", "Performance tracking", "Strategy optimization"],
     },
   ];
   const topFeatures = [
@@ -447,25 +547,78 @@ export default function LandingPage() {
             Trusted BY 100+ LinkedIn Voices
           </h4>
 
-          {/* Scrolling avatars */}
-          <div
-            className="marquee-container mt-5 mb-4 d-flex justify-content-center align-items-center text-center"
-            style={{ minHeight: "30vh" }}
-          >
-            <div className="marquee">
-              {users.concat(users).map((user, index) => (
-                <div className="profile text-center mx-3" key={index}>
-                  <img src={user.img} alt={user.name} className="avatar mb-2" />
-                  <div className="fw-semibold">{user.name}</div>
-                  <div
-                    className="text-secondary fw-medium"
-                    style={{ fontSize: "0.9rem", color: "#aaa" }}
-                  >
-                    {user.role}
+          {/* Testimonials Slider */}
+          <div className="testimonial-slider mt-5 mb-5">
+            <Swiper
+              effect={'coverflow'}
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView={'auto'}
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 2.5,
+                slideShadows: false,
+              }}
+              pagination={{ clickable: true }}
+              navigation={true}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+              className="mySwiper"
+            >
+              {testimonials.map((testimonial) => (
+                <SwiperSlide key={testimonial.id}>
+                  <div className="testimonial-card">
+                    <div className="position-relative mb-4">
+                      <FaQuoteLeft 
+                        style={{ 
+                          fontSize: '1.5rem', 
+                          opacity: 0.3, 
+                          position: 'absolute',
+                          top: '-10px',
+                          left: '-10px',
+                          color: '#c800ff'
+                        }} 
+                      />
+                      <p className="testimonial-quote">{testimonial.quote}</p>
+                      <FaQuoteRight 
+                        style={{ 
+                          fontSize: '1.5rem', 
+                          opacity: 0.3, 
+                          position: 'absolute',
+                          bottom: '-10px',
+                          right: '-10px',
+                          color: '#00f2ff'
+                        }} 
+                      />
+                    </div>
+                    
+                    <div className="d-flex align-items-center mt-4">
+                      <img 
+                        src={testimonial.avatar} 
+                        alt={testimonial.name} 
+                        className="testimonial-avatar me-3" 
+                      />
+                      <div>
+                        <h5 className="testimonial-author">{testimonial.name}</h5>
+                        <p className="testimonial-role">{testimonial.role}</p>
+                        <div className="d-flex mt-1">
+                          {[...Array(5)].map((_, i) => (
+                            i < testimonial.rating ? 
+                              <FaStar key={i} style={{ color: '#ffcc00', marginRight: '2px' }} /> : 
+                              <FaRegStar key={i} style={{ color: '#ffcc00', marginRight: '2px' }} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           </div>
         </Container>
       </div>
@@ -762,137 +915,147 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* First features row */}
+          {/* Features grid with modern design */}
           <Row className="g-4 justify-content-center mb-5">
-            {features.slice(0, 2).map((feat, idx) => (
-              <Col md={6} key={idx}>
+            {features.map((feature, idx) => (
+              <Col lg={4} md={6} key={idx}>
                 <motion.div
                   whileHover={{
-                    y: -8,
-                    boxShadow:
-                      idx === 0
-                        ? "0 8px 25px rgba(200, 0, 255, 0.2)"
-                        : "0 8px 25px rgba(0, 242, 255, 0.2)",
+                    y: -10,
+                    boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)`,
                   }}
-                  initial="hidden"
-                  whileInView="visible"
-                  variants={fadeInUp}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
                   viewport={{ once: true }}
                   className="h-100"
                 >
-                  <Card
-                    className="bg-black text-light h-100 p-4 rounded-4 feature-card"
-                    style={{
-                      background: "rgba(0, 0, 0, 0.6)",
-                      backdropFilter: "blur(10px)",
-                      color: "#eee",
-                      boxShadow:
-                        idx === 0
-                          ? "0 4px 15px rgba(200, 0, 255, 0.15)"
-                          : "0 4px 15px rgba(0, 242, 255, 0.15)",
-                      border:
-                        idx === 0
-                          ? "1px solid rgba(200, 0, 255, 0.1)"
-                          : "1px solid rgba(0, 242, 255, 0.1)",
-                    }}
-                  >
-                    <Card.Body>
-                      <h5
-                        style={{
-                          fontSize: "1.2rem",
-                          fontWeight: "600",
-                          background:
-                            idx === 0
-                              ? "linear-gradient(135deg, #b300b3, #ff00ff)"
-                              : "linear-gradient(135deg, #00a2ff, #00f2ff)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {feat.title}
-                      </h5>
-                      <p style={{ color: "#aaa", fontSize: "0.95rem" }}>
-                        {feat.subtitle}
-                      </p>
-                      {feat.suggestions ? (
-                        <div className="mt-4">
-                          {feat.suggestions.map((sugg, i) => (
-                            <motion.div
+                  <div className="feature-card">
+                    {/* Glow effect */}
+                    <div 
+                      className={`position-absolute glow-effect ${idx % 2 === 0 ? 'glow-purple' : 'glow-blue'}`}
+                      style={{ 
+                        width: '200px', 
+                        height: '200px', 
+                        top: idx % 2 === 0 ? '-50px' : 'auto',
+                        bottom: idx % 2 === 0 ? 'auto' : '-50px',
+                        left: idx % 3 === 0 ? '-50px' : 'auto',
+                        right: idx % 3 === 0 ? 'auto' : '-50px',
+                        opacity: 0.5,
+                        zIndex: 0
+                      }}
+                    ></div>
+                    
+                    {/* Feature icon */}
+                    <div 
+                      className="feature-icon-container"
+                      style={{ 
+                        background: feature.color,
+                      }}
+                    >
+                      {feature.icon}
+                    </div>
+                    
+                    {/* Feature title */}
+                    <h3 className="feature-title">
+                      {feature.title}
+                    </h3>
+                    
+                    {/* Feature subtitle */}
+                    <h5 className="feature-subtitle">
+                      {feature.subtitle}
+                    </h5>
+                    
+                    {/* Feature description */}
+                    <p className="feature-description">
+                      {feature.description}
+                    </p>
+                    
+                    {/* Feature suggestions if available */}
+                    {feature.suggestions && (
+                      <div className="feature-benefits">
+                        <p
+                          style={{
+                            fontSize: "1rem",
+                            color: "#bbb",
+                            fontWeight: "600",
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          Smart suggestions include:
+                        </p>
+                        <ul
+                          style={{
+                            listStyleType: "none",
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
+                          {feature.suggestions.map((suggestion, i) => (
+                            <motion.li
                               key={i}
-                              whileHover={{ x: 6 }}
-                              className="suggestion-item d-flex align-items-center mb-2 px-3 py-2 rounded"
-                              style={{
-                                background: "rgba(255, 255, 255, 0.05)",
-                                color: "#ccc",
-                                backdropFilter: "blur(5px)",
-                                userSelect: "none",
-                                cursor: "default",
-                                fontSize: "0.9rem",
-                                border: "1px solid rgba(255, 255, 255, 0.03)",
-                              }}
+                              className="feature-benefit-item"
+                              initial={{ opacity: 0, x: -10 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.1 + 0.2 }}
                             >
-                              <span className="me-2 suggestion-icon">💡</span>{" "}
-                              {sugg}
-                            </motion.div>
+                              <FaCheck className="feature-check-icon" />
+                              <span className="feature-benefit-text">{suggestion}</span>
+                            </motion.li>
                           ))}
-                        </div>
-                      ) : (
-                        <div className="text-center mt-4">
-                          <div style={{ fontSize: "3rem" }}>{feat.image}</div>
-                        </div>
-                      )}
-                    </Card.Body>
-                  </Card>
-                </motion.div>
-              </Col>
-            ))}
-          </Row>
-
-          {/* Next features row */}
-          <Row className="g-4 justify-content-center mb-5">
-            {features.slice(2).map((feat, idx) => (
-              <Col md={4} key={idx}>
-                <motion.div
-                  whileHover={{
-                    y: -8,
-                    boxShadow: "0 8px 25px rgba(200, 0, 255, 0.2)",
-                  }}
-                  initial="hidden"
-                  whileInView="visible"
-                  variants={fadeInUp}
-                  viewport={{ once: true }}
-                  className="h-100"
-                >
-                  <Card
-                    className="bg-black text-light h-100 p-4 rounded-4 feature-card"
-                    style={{
-                      background: "rgba(0, 0, 0, 0.6)",
-                      backdropFilter: "blur(10px)",
-                      color: "#eee",
-                      boxShadow: "0 4px 15px rgba(200, 0, 255, 0.1)",
-                      border: "1px solid rgba(200, 0, 255, 0.1)",
-                    }}
-                  >
-                    <Card.Body className="text-center">
-                      <h6
-                        style={{
-                          fontSize: "1rem",
-                          fontWeight: "600",
-                          background:
-                            "linear-gradient(135deg, #b300b3, #ff00ff)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {feat.title}
-                      </h6>
-                      <div style={{ fontSize: "2.5rem", marginTop: "1rem" }}>
-                        {feat.image}
+                        </ul>
                       </div>
-                    </Card.Body>
-                  </Card>
+                    )}
+                    
+                    {/* Feature benefits if available */}
+                    {feature.benefits && (
+                      <div className="feature-benefits">
+                        <p
+                          style={{
+                            fontSize: "1rem",
+                            color: "#bbb",
+                            fontWeight: "600",
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          Key benefits:
+                        </p>
+                        <ul
+                          style={{
+                            listStyleType: "none",
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
+                          {feature.benefits.map((benefit, i) => (
+                            <motion.li
+                              key={i}
+                              className="feature-benefit-item"
+                              initial={{ opacity: 0, x: -10 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.1 + 0.2 }}
+                            >
+                              <FaCheck className="feature-check-icon" />
+                              <span className="feature-benefit-text">{benefit}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {/* Decorative gradient line */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "3px",
+                        background: feature.color,
+                        opacity: 0.7,
+                      }}
+                    ></div>
+                  </div>
                 </motion.div>
               </Col>
             ))}
@@ -1479,7 +1642,7 @@ export default function LandingPage() {
       </div>
 
       {/* Testimonials Section */}
-      <div id="testimonials" className="back py-5 text-white">
+      <div id="testimonials" className="back py-5 text-white testimonial-slider">
         <Container>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1490,8 +1653,8 @@ export default function LandingPage() {
             <h2
               className="mb-3"
               style={{
-                fontSize: "2rem",
-                fontWeight: "600",
+                fontSize: "2.2rem",
+                fontWeight: "700",
                 background: "linear-gradient(135deg, #ffffff, #aaaaaa)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -1503,7 +1666,7 @@ export default function LandingPage() {
               className="mx-auto"
               style={{
                 maxWidth: "600px",
-                fontSize: "0.95rem",
+                fontSize: "1rem",
                 color: "#999",
                 lineHeight: "1.6",
               }}
@@ -1513,201 +1676,118 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* Testimonial cards with modern design */}
+          {/* Testimonial slider with modern design */}
           <div className="position-relative">
             {/* Background decorative elements */}
-            <div
-              className="position-absolute d-none d-lg-block"
-              style={{
-                width: "200px",
-                height: "200px",
-                background:
-                  "radial-gradient(circle, rgba(200, 0, 255, 0.1) 0%, rgba(200, 0, 255, 0) 70%)",
-                top: "10%",
-                left: "5%",
-                borderRadius: "50%",
-                filter: "blur(40px)",
-                zIndex: 0,
-              }}
-            ></div>
-            <div
-              className="position-absolute d-none d-lg-block"
+            <div className="position-absolute d-none d-lg-block glow-effect glow-purple"
               style={{
                 width: "300px",
                 height: "300px",
-                background:
-                  "radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, rgba(0, 242, 255, 0) 70%)",
+                top: "10%",
+                left: "5%",
+              }}
+            ></div>
+            <div className="position-absolute d-none d-lg-block glow-effect glow-blue"
+              style={{
+                width: "400px",
+                height: "400px",
                 bottom: "10%",
                 right: "5%",
-                borderRadius: "50%",
-                filter: "blur(40px)",
-                zIndex: 0,
               }}
             ></div>
 
-            <Row
-              className="g-4 justify-content-center position-relative"
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="position-relative"
               style={{ zIndex: 1 }}
             >
-              {[
-                {
-                  name: "Sarah Johnson",
-                  role: "Marketing Director",
-                  image: userImage,
-                  text: "Klype has completely transformed my LinkedIn strategy. I'm getting 3x more engagement and quality leads since I started using it.",
-                  rating: 5,
-                  gradient:
-                    "linear-gradient(135deg, rgba(200, 0, 255, 0.05), rgba(200, 0, 255, 0.15))",
-                },
-                {
-                  name: "Michael Chen",
-                  role: "Tech Entrepreneur",
-                  image: userImage1,
-                  text: "As a busy founder, I never had time for consistent LinkedIn posting. Klype solved that problem - now I have a steady stream of content that actually sounds like me.",
-                  rating: 5,
-                  gradient:
-                    "linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(0, 242, 255, 0.15))",
-                },
-                {
-                  name: "Priya Sharma",
-                  role: "Sales Consultant",
-                  image: userImage2,
-                  text: "The personalized content calendar is a game-changer. I've seen a 40% increase in inbound inquiries since using Klype for just two months.",
-                  rating: 4,
-                  gradient:
-                    "linear-gradient(135deg, rgba(200, 0, 255, 0.05), rgba(0, 242, 255, 0.15))",
-                },
-              ].map((testimonial, index) => (
-                <Col lg={4} md={6} key={index}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.15 }}
-                    className="h-100"
-                    whileHover={{
-                      y: -10,
-                      boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
-                    }}
-                  >
-                    <div
-                      className="testimonial-card h-100 p-4 rounded-4 position-relative"
-                      style={{
-                        background: "rgba(0, 0, 0, 0.6)",
-                        backdropFilter: "blur(15px)",
-                        WebkitBackdropFilter: "blur(15px)",
-                        border: "1px solid rgba(255, 255, 255, 0.05)",
-                        transition: "all 0.3s ease",
-                        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
-                        overflow: "hidden",
+              <Swiper
+                effect={'coverflow'}
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView={'auto'}
+                coverflowEffect={{
+                  rotate: 5,
+                  stretch: 0,
+                  depth: 100,
+                  modifier: 3,
+                  slideShadows: false,
+                }}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{ 
+                  clickable: true,
+                  dynamicBullets: true,
+                }}
+                navigation={true}
+                loop={true}
+                modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+                className="mySwiper"
+                style={{ 
+                  padding: '50px 0',
+                }}
+              >
+                {testimonials.map((testimonial, index) => (
+                  <SwiperSlide key={index} style={{ width: '450px', maxWidth: '90%' }}>
+                    <motion.div 
+                      className="testimonial-card"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ 
+                        duration: 0.5, 
+                        delay: index * 0.1,
+                        ease: "easeOut"
                       }}
                     >
-                      {/* Quote icon */}
-                      <div
-                        className="position-absolute"
-                        style={{
-                          top: "15px",
-                          right: "15px",
-                          fontSize: "3rem",
-                          opacity: "0.1",
-                          color: "#fff",
-                          fontFamily: "serif",
-                        }}
-                      >
-                        "
-                      </div>
-
-                      {/* Background gradient */}
-                      <div
-                        className="position-absolute"
-                        style={{
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: "100%",
-                          background: testimonial.gradient,
-                          opacity: 0.5,
-                          zIndex: -1,
-                        }}
-                      ></div>
-
                       {/* Rating */}
-                      <div className="mb-3" style={{ color: "#FFD700" }}>
+                      <div className="testimonial-rating">
                         {Array(5)
                           .fill()
                           .map((_, i) => (
-                            <span
-                              key={i}
-                              style={{ fontSize: "0.9rem", marginRight: "3px" }}
-                            >
-                              {i < testimonial.rating ? "★" : "☆"}
+                            <span key={i}>
+                              {i < testimonial.rating ? 
+                                <FaStar className="star-icon" /> : 
+                                <FaRegStar className="star-icon" style={{ color: 'rgba(255, 215, 0, 0.3)' }} />
+                              }
                             </span>
                           ))}
                       </div>
 
                       {/* Testimonial text */}
-                      <p
-                        className="mb-4"
-                        style={{
-                          fontSize: "0.95rem",
-                          lineHeight: "1.7",
-                          color: "#eee",
-                          fontStyle: "italic",
-                          position: "relative",
-                          zIndex: 1,
-                        }}
-                      >
-                        "{testimonial.text}"
-                      </p>
+                      <div className="position-relative mb-4">
+                        <FaQuoteLeft className="quote-icon quote-left" />
+                        <p className="testimonial-quote">
+                          <span style={{ fontSize: '1.5em', lineHeight: '0', verticalAlign: 'middle', color: 'rgba(200, 0, 255, 0.7)', marginRight: '5px' }}>"</span>
+                          {testimonial.quote}
+                        </p>
+                        <FaQuoteRight className="quote-icon quote-right" />
+                      </div>
 
                       {/* User info */}
-                      <div className="d-flex align-items-center mt-4">
-                        <div
-                          className="rounded-circle overflow-hidden me-3"
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            border: "2px solid rgba(255, 255, 255, 0.2)",
-                            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-                          }}
-                        >
-                          <img
-                            src={testimonial.image}
-                            alt={testimonial.name}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </div>
+                      <motion.div 
+                        className="d-flex align-items-center mt-4"
+                        whileHover={{ scale: 1.03 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >
+                        <img
+                          src={testimonial.avatar}
+                          alt={testimonial.name}
+                          className="testimonial-avatar me-3"
+                        />
                         <div>
-                          <h5
-                            className="mb-0"
-                            style={{
-                              fontSize: "1rem",
-                              fontWeight: "600",
-                              color: "#fff",
-                            }}
-                          >
-                            {testimonial.name}
-                          </h5>
-                          <p
-                            className="mb-0"
-                            style={{
-                              fontSize: "0.8rem",
-                              color: "#aaa",
-                              fontWeight: "500",
-                            }}
-                          >
-                            {testimonial.role}
-                          </p>
+                          <h5 className="testimonial-author">{testimonial.name}</h5>
+                          <p className="testimonial-role">{testimonial.role}</p>
                         </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Col>
-              ))}
-            </Row>
+                      </motion.div>
+                    </motion.div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </motion.div>
           </div>
 
           {/* Social proof */}
@@ -1719,7 +1799,7 @@ export default function LandingPage() {
           >
             <p
               style={{
-                fontSize: "0.9rem",
+                fontSize: "1rem",
                 color: "#999",
                 fontWeight: "500",
               }}
@@ -1729,19 +1809,22 @@ export default function LandingPage() {
             <div className="d-flex justify-content-center align-items-center flex-wrap gap-4 mt-3">
               {["Google", "Microsoft", "LinkedIn", "Salesforce", "HubSpot"].map(
                 (company, idx) => (
-                  <div
+                  <motion.div
                     key={idx}
+                    whileHover={{ scale: 1.05, y: -5 }}
                     style={{
-                      padding: "8px 16px",
-                      background: "rgba(255, 255, 255, 0.03)",
+                      padding: "10px 20px",
+                      background: "rgba(255, 255, 255, 0.05)",
                       borderRadius: "30px",
-                      fontSize: "0.85rem",
-                      color: "#aaa",
-                      border: "1px solid rgba(255, 255, 255, 0.05)",
+                      fontSize: "0.9rem",
+                      color: "#ddd",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+                      transition: "all 0.3s ease",
                     }}
                   >
                     {company}
-                  </div>
+                  </motion.div>
                 )
               )}
             </div>

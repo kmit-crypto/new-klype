@@ -5,11 +5,15 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true,
+    host: '0.0.0.0',
+    port: 12000,
     allowedHosts: [
-      'work-1-kpdstgsdglteiogl.prod-runtime.all-hands.dev',
-      'work-2-kpdstgsdglteiogl.prod-runtime.all-hands.dev'
+      'work-1-ztzwgfesaacnvfnw.prod-runtime.all-hands.dev',
+      'work-2-ztzwgfesaacnvfnw.prod-runtime.all-hands.dev'
     ],
-    cors: true
+    cors: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
   }
 })
