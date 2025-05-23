@@ -915,18 +915,47 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* Features grid with modern design */}
+          {/* Features grid with modern design and varying sizes */}
           <Row className="g-4 justify-content-center mb-5">
-            {features.map((feature, idx) => (
-              <Col lg={4} md={6} key={idx}>
-                <motion.div
-                  whileHover={{
-                    y: -10,
-                    boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)`,
+            {features.map((feature, idx) => {
+              // Dynamic sizing based on feature index and content
+              const getColSize = () => {
+                // First feature is large
+                if (idx === 0) return { lg: 6, md: 12 };
+                // Second and third features are medium
+                if (idx === 1 || idx === 2) return { lg: 3, md: 6 };
+                // Fourth feature is medium-large
+                if (idx === 3) return { lg: 5, md: 8 };
+                // Fifth feature is small
+                if (idx === 4) return { lg: 3, md: 4 };
+                // Last feature is medium
+                return { lg: 4, md: 6 };
+              };
+              
+              const { lg, md } = getColSize();
+              
+              // Calculate dynamic height based on content length
+              const contentLength = (feature.description || "").length;
+              const minHeight = 100 + (contentLength > 200 ? 50 : 0);
+              
+              return (
+                <Col lg={lg} md={md} key={idx}>
+                  <motion.div
+                    whileHover={{
+                      y: -10,
+                      scale: 1.02,
+                      boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)`,
+                      rotateY: 3,
+                    }}
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: idx * 0.15,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15
                   }}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
                   viewport={{ once: true }}
                   className="h-100"
                 >
@@ -935,26 +964,38 @@ export default function LandingPage() {
                     <div 
                       className={`position-absolute glow-effect ${idx % 2 === 0 ? 'glow-purple' : 'glow-blue'}`}
                       style={{ 
-                        width: '200px', 
-                        height: '200px', 
-                        top: idx % 2 === 0 ? '-50px' : 'auto',
-                        bottom: idx % 2 === 0 ? 'auto' : '-50px',
-                        left: idx % 3 === 0 ? '-50px' : 'auto',
-                        right: idx % 3 === 0 ? 'auto' : '-50px',
-                        opacity: 0.5,
-                        zIndex: 0
+                        width: '180px', 
+                        height: '180px', 
+                        top: idx % 2 === 0 ? '-40px' : 'auto',
+                        bottom: idx % 2 === 0 ? 'auto' : '-40px',
+                        left: idx % 3 === 0 ? '-40px' : 'auto',
+                        right: idx % 3 === 0 ? 'auto' : '-40px',
+                        opacity: 0.4,
+                        zIndex: 0,
+                        filter: `blur(${30 + idx * 5}px)`
                       }}
                     ></div>
                     
                     {/* Feature icon */}
-                    <div 
+                    <motion.div 
                       className="feature-icon-container"
                       style={{ 
                         background: feature.color,
                       }}
+                      animate={{ 
+                        rotate: [0, 5, 0, -5, 0],
+                        scale: [1, 1.05, 1, 1.05, 1]
+                      }}
+                      transition={{
+                        duration: 5,
+                        ease: "easeInOut",
+                        times: [0, 0.25, 0.5, 0.75, 1],
+                        repeat: Infinity,
+                        repeatDelay: idx
+                      }}
                     >
                       {feature.icon}
-                    </div>
+                    </motion.div>
                     
                     {/* Feature title */}
                     <h3 className="feature-title">
